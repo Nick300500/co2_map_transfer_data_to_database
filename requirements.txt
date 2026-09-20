@@ -1,0 +1,10 @@
+# Intentionally unpinned: the Prefect worker installs this into its shared environment,
+# and the server's own requirements.txt is unpinned too. Exact pins could change
+# packages other flows depend on.
+pandas
+sqlalchemy
+psycopg2-binary
+geopandas
+geoalchemy2
+pyarrow
+python-dotenv

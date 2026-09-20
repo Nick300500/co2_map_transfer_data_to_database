@@ -1,0 +1,31 @@
+name: transfer-data-to-database
+
+# A private repo additionally needs an access_token, e.g. via a Prefect secret block.
+pull:
+  - prefect.deployments.steps.git_clone:
+      id: clone-step
+      repository: https://github.com/Nick300500/co2_map_transfer_data_to_database
+      branch: main
+  - prefect.deployments.steps.pip_install_requirements:
+      directory: "{{ clone-step.directory }}"
+      requirements_file: requirements.txt
+
+definitions:
+  work_pool: &work_pool
+    name: local-pool
+    job_variables:
+      env:
+        PREFECT_LOGGING_EXTRA_LOGGERS: common
+
+deployments:
+  - name: transfer-mastr
+    entrypoint: flows.py:transfer_mastr_flow
+    work_pool: *work_pool
+
+  - name: transfer-capacities
+    entrypoint: flows.py:transfer_capacities_flow
+    work_pool: *work_pool
+
+  - name: transfer-demand-reg-factors
+    entrypoint: flows.py:transfer_demand_reg_factors_flow
+    work_pool: *work_pool
