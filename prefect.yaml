@@ -22,6 +22,10 @@ deployments:
     entrypoint: flows.py:transfer_mastr_flow
     work_pool: *work_pool
 
+  - name: mastr-refresh
+    entrypoint: flows.py:mastr_refresh_flow
+    work_pool: *work_pool
+
   - name: transfer-capacities
     entrypoint: flows.py:transfer_capacities_flow
     work_pool: *work_pool

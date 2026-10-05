@@ -54,16 +54,20 @@ dort weiter, wo es aufgehört hat.
 Langfristig sollen die Transfers regelmäßig und serverseitig über Prefect
 laufen. Vorbereitet sind:
 
-- `flows.py`: dünne `@flow`-Wrapper um die `main()`-Funktionen von
-  `transfer_mastr.py`, `transfer_capacities.py` und
-  `transfer_demand_reg_factors.py` (die Skripte selbst bleiben unverändert
-  und laufen weiter einzeln, sie brauchen Prefect nicht).
-- `prefect.yaml`: drei Deployments auf dem Work-Pool `local-pool`; der Worker
-  klont dieses Repo und installiert `requirements.txt`. Noch ohne Zeitpläne.
+- `flows.py`: dünne `@flow`-Wrapper um `transfer_mastr.py`,
+  `transfer_capacities.py` und `transfer_demand_reg_factors.py` (unverändert,
+  brauchen Prefect nicht zum Laufen) plus `mastr_refresh_flow`, der stattdessen
+  `mastr_flow.py` aufruft.
+- `mastr_flow.py`: lädt MaStR direkt von der Bundesnetzagentur (`open-mastr`)
+  statt aus einer lokalen Datei — braucht als einziger Flow keine lokalen
+  Pfade. Schreibt in ein Schattenschema, prüft die Zeilenzahl, tauscht erst
+  bei Erfolg (Details: `PREFECT_PLAN.md`). **Noch nicht erfolgreich
+  Ende-zu-Ende getestet** (wiederholte Server-Hänger, siehe dort).
+- `prefect.yaml`: vier Deployments auf `local-pool`; der Worker klont dieses
+  Repo und installiert `requirements.txt`. Noch ohne Zeitpläne.
 
-Stand: noch nichts deployt. Auf dem Server gibt es die lokalen Quelldateien
-nicht, die Flows müssen ihre Daten dort direkt aus der Originalquelle
-beziehen, bevor ein Deploy sinnvoll ist. Details und Fahrplan:
+Stand: noch nichts deployt. Die drei alten Wrapper brauchen weiterhin lokale
+Quelldateien, die auf dem Server nicht existieren. Details und Fahrplan:
 [PREFECT_PLAN.md](PREFECT_PLAN.md).
 
 Für die Flows lokal zusätzlich (gleiche Version wie auf dem Server):
